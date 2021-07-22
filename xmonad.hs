@@ -60,7 +60,7 @@ myManageHook = composeAll
 -- The rest of the custom settings
 myConfig :: XConfig (Choose Tall (Choose (Mirror Tall) Full))
 myConfig = def { modMask = mod4Mask
-               , borderWidth = 1
+               , borderWidth = 0
                , terminal = myTerminal
                , normalBorderColor = border
                , focusedBorderColor = fBorder
