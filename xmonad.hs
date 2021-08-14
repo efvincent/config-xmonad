@@ -1,14 +1,15 @@
-import XMonad 
+import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageHelpers
-import XMonad.Util.EZConfig(additionalKeys)
 import qualified XMonad.StackSet as W
+import XMonad.Util.EZConfig (additionalKeys)
+
 ------------------------------------------------------------------------
 -- Workspaces
 -- The default number of workspaces (virtual screens) and their names.
 --
 myWorkspaces :: [String]
-myWorkspaces = ["1:term", "2:emacs", "3:web"] ++ map show [4..6]
+myWorkspaces = ["1:term", "2:emacs", "3:web"] ++ map show [4 .. 6]
 
 -- Command to launch the bar
 myBar :: String
@@ -27,11 +28,11 @@ fBorder = "#202050"
 
 -- key binding to toggle gap for the bar
 toggleStrutsKey :: XConfig l -> (KeyMask, KeySym)
-toggleStrutsKey XConfig { XMonad.modMask = modMask } = (modMask, xK_b)
+toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 -- Custom PP, configure it as you like. It determines what is being written to the bar.
 myPP :: PP
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
+myPP = xmobarPP {ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"}
 
 ------------------------------------------------------------------------
 -- Window rules
@@ -47,28 +48,42 @@ myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
 -- To match on the WM_NAME, you can use 'title' in the same way that
 -- 'className' and 'resource' are used below.
 --
-myManageHook = composeAll
-    [ className =? "Navigator"      --> doShift "3:web"
-    , className =? "firefox"        --> doShift "3:web"
-    , resource  =? "desktop_window" --> doIgnore
-    , className =? "Gimp"           --> doFloat
-    , resource  =? "gpicview"       --> doFloat
-    , className =? "MPlayer"        --> doFloat
-    , className =? "Xchat"          --> doShift "5:media"
-    , isFullscreen --> (doF W.focusDown <+> doFullFloat)]
-  
+myManageHook =
+  composeAll
+    [ className =? "Navigator" --> doShift "3:web",
+      className =? "firefox" --> doShift "3:web",
+      resource =? "desktop_window" --> doIgnore,
+      className =? "Gimp" --> doFloat,
+      resource =? "gpicview" --> doFloat,
+      className =? "MPlayer" --> doFloat,
+      className =? "Xchat" --> doShift "5:media",
+      isFullscreen --> (doF W.focusDown <+> doFullFloat)
+    ]
+
+myKeys =
+  [ ((0, 0x1008FF11), spawn "amixer -q sset Master 2%-"),
+    ((0, 0x1008FF13), spawn "amixer -q sset Master 2%+"),
+    ((0, 0x1008FF12), spawn "amixer set Master toggle")
+  ]
+--    ++ [ (otherModMasks ++ "M-" ++ [key], action tag)
+--         | (tag, key) <- zip myWorkspaces "123456789",
+--           (otherModMasks, action) <-
+--             [ ("", windows . W.view),
+--               ("S-", windows . W.shift)
+--             ]
+--       ]
+
 -- The rest of the custom settings
 myConfig :: XConfig (Choose Tall (Choose (Mirror Tall) Full))
-myConfig = def { modMask = mod4Mask
-               , borderWidth = 0
-               , terminal = myTerminal
-               , normalBorderColor = border
-               , focusedBorderColor = fBorder
-               } `additionalKeys`
-               [ ((0 , 0x1008FF11), spawn "amixer -q sset Master 2%-"),
-                 ((0 , 0x1008FF13), spawn "amixer -q sset Master 2%+"),
-                 ((0 , 0x1008FF12), spawn "amixer set Master toggle")
-               ]
+myConfig =
+  def
+    { modMask = mod4Mask,
+      borderWidth = 0,
+      terminal = myTerminal,
+      normalBorderColor = border,
+      focusedBorderColor = fBorder
+    }
+    `additionalKeys` myKeys
 
 main :: IO ()
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
@@ -77,10 +92,10 @@ main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 -- main2 = do
 --   xmproc <- spawnPipe "xmobar"
 --   xmonad $ docks defaultConfig
-  
+
 --     { layoutHook = avoidStruts $ layoutHook defaultConfig
 --     } `additionalKeys`
 --     [ ((0 , 0x1008FF11), spawn "amixer -q sset Master 2%-"),
 --       ((0 , 0x1008FF13), spawn "amixer -q sset Master 2%+"),
---       ((0 , 0x1008FF12), spawn "amixer set Master toggle")
+--       ((0 , 0x1008FF12), spawn "amixer set Master toggle
 --     ]
